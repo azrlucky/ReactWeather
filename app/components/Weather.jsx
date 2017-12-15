@@ -13,7 +13,9 @@ var Weather = React.createClass({
   handleSearch: function(city) {
     this.setState({
       isLoading: true,
-      errorMessage: undefined
+      errorMessage: undefined,
+      city: undefined,
+      temp: undefined
     });
     WeatherApi.getTemp(city).then(temp => {
       this.setState({
@@ -27,12 +29,21 @@ var Weather = React.createClass({
         errorMessage: err.message
       });
     });
-    // this.setState({
-    //   city,
-    //   temp: 23
-    // });
   },
-
+  componentDidMount: function() {
+    var location = this.props.location.query.location;
+    if(location && location.length > 0) {
+      this.handleSearch(location);
+      window.location.hash = '#/';
+    }
+  },
+  componentWillReceiveProps: function(newProps) {
+    var location = newProps.location.query.location;
+    if(location && location.length > 0) {
+      this.handleSearch(location);
+      window.location.hash = '#/';
+    }
+  },
   render: function(){
     var {temp, city, isLoading, errorMessage} = this.state;
     function renderMessage () {
